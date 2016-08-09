@@ -332,7 +332,8 @@ class CoreEdgeReactionModel:
         spec.generateResonanceIsomers()
         spec.molecularWeight = Quantity(spec.molecule[0].getMolecularWeight()*1000.,"amu")
         
-        submit(spec)
+        if not spec.thermo:
+            submit(spec)
         
         if spec.label == '':
             if spec.thermo and spec.thermo.label != '': #check if thermo libraries have a name for it
