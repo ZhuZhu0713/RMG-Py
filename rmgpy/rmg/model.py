@@ -231,7 +231,7 @@ class CoreEdgeReactionModel:
         self.pressureDependence = None
         self.quantumMechanics = None
         self.verboseComments = False
-        self.kineticsEstimator = 'group additivity'
+        self.kineticsEstimator = 'rate rules'
         self.indexSpeciesDict = {}
         self.saveEdgeSpecies = False
         self.iterationNum = 0
