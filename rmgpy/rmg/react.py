@@ -206,22 +206,20 @@ def findDegeneracies(rxnList, sameReactants=None):
                 sameTemplate = False
                 for rxn in rxnList1:
                     isomorphic = rxn0.isIsomorphic(rxn, checkIdentical=False, checkTemplateRxnProducts=True)
-                    if not isomorphic:
-                        identical = False
-                    else:
+                    if isomorphic:
                         identical = rxn0.isIsomorphic(rxn, checkIdentical=True, checkTemplateRxnProducts=True)
-                    sameTemplate = frozenset(rxn.template) == frozenset(rxn0.template)
-                    if not isomorphic:
+                        sameTemplate = frozenset(rxn.template) == frozenset(rxn0.template)
+                    else:
                         # a different product was found, go to next list
+                        break
+                    if identical:
+                        # An exact copy of rxn0 is already in our list, so we can move on to the next rxn
                         break
                     elif not sameTemplate:
                         # a different transition state was found, mark as duplicate and
                         # go to the next sublist
                         rxn.duplicate = True
                         rxn0.duplicate = True
-                        break
-                    elif identical:
-                        # An exact copy of rxn0 is already in our list, so we can move on to the next rxn
                         break
                     else: # sameTemplate and isomorphic but not identical
                         # This is the right sublist for rxn0, but continue to see if there is an identical rxn
@@ -230,7 +228,7 @@ def findDegeneracies(rxnList, sameReactants=None):
                     # We did not break, so this is the right sublist, but there is no identical reaction
                     # This means that we should add rxn0 to the sublist as a degenerate rxn
                     rxnList1.append(rxn0)
-                if isomorphic and sameTemplate:
+                if (isomorphic and sameTemplate) or identical:
                     # We already found the right sublist, so we can move on to the next rxn
                     break
             else:
