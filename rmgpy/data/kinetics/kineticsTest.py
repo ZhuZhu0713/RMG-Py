@@ -719,6 +719,17 @@ class TestReactionDegeneracy(unittest.TestCase):
         self.assertEqual(desired_rxn.degeneracy, 3)
         self.assertEqual(set(desired_rxn.template), {'C_rad/H2/Cd', 'Cmethyl_Csrad/H/Cd'})
 
+    def test_degeneracy_multiple_resonance_different_template(self):
+        """Test that reactions from different resonance structures are combined."""
+        reactants = (Species().fromSMILES('c1ccccc1'), Species().fromSMILES('[CH3]'))
+        reactions = reactSpecies(reactants)
+
+        selected_rxns = [rxn for rxn in reactions if rxn.family == 'H_Abstraction']
+
+        self.assertEqual(len(selected_rxns), 1)
+        self.assertEqual(selected_rxns[0].degeneracy, 6)
+
+
 class TestKineticsCommentsParsing(unittest.TestCase):
 
     @classmethod
