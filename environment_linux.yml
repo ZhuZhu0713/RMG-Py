@@ -41,4 +41,5 @@ dependencies:
   - mock
   - muq
   - pymongo
-  - keras
+  - rmg::keras
+  - theano >= 0.9.0
