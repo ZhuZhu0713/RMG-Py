@@ -23,7 +23,7 @@ def get_data_from_db(db_name, collection_name,
 		mol = Molecule().fromSMILES(smile)
 		mol_tensor = get_molecule_tensor(mol, \
 						add_extra_atom_attribute, add_extra_bond_attribute)
-		hf298_qm = float(db_mol["Hf298"])
+		hf298_qm = float(db_mol["Hf298(kcal/mol)"])
 		X.append(mol_tensor)
 		y.append(hf298_qm)
 
