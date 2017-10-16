@@ -12,7 +12,7 @@ def test_MoleculeConv():
 	atom_num = 9
 	batch_size = 2
 
-	layer_test(layers.MoleculeConv,
+	check_layer_output(layers.MoleculeConv,
 				kwargs={
 					"units": units, 
 					"inner_dim": attribute_size-1, 
@@ -23,8 +23,7 @@ def test_MoleculeConv():
 							attribute_size)
 				)
 
-@attr('helper')
-def layer_test(layer_cls, kwargs={}, input_shape=None, input_dtype=None,
+def check_layer_output(layer_cls, kwargs={}, input_shape=None, input_dtype=None,
                input_data=None, expected_output=None,
                expected_output_dtype=None, fixed_batch_size=False):
     """Test routine for a layer with a single input tensor
