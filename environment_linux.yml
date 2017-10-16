@@ -2,6 +2,7 @@ name: rmg_env
 channels:
   - defaults
   - rmg
+  - conda-forge
 dependencies:
   - libgcc # [unix]
   - python
@@ -41,4 +42,4 @@ dependencies:
   - mock
   - muq
   - pymongo
-  - rmg::keras
+  - conda-forge::keras ==1.2.2
