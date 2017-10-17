@@ -8,7 +8,6 @@ import inspect
 from nose.plugins.attrib import attr
 import unittest
 
-
 class TestLayer(unittest.TestCase):
 
 	def test_MoleculeConv1(self):
@@ -17,7 +16,7 @@ class TestLayer(unittest.TestCase):
 		atom_num = 9
 		batch_size = 2
 
-		layer_test(self, layers.MoleculeConv,
+		check_layer_output(self, layers.MoleculeConv,
 					kwargs={
 						"units": units, 
 						"inner_dim": attribute_size-1, 
@@ -45,7 +44,7 @@ class TestLayer(unittest.TestCase):
 		attribute_size = M.shape[2]
 		depth = 1
 
-		layer_test(self, layers.MoleculeConv,
+		check_layer_output(self, layers.MoleculeConv,
 					kwargs={
 						"units": units, 
 						"inner_dim": attribute_size-1,
@@ -77,7 +76,7 @@ class TestLayer(unittest.TestCase):
 		attribute_size = M.shape[2]
 		depth = 2
 
-		layer_test(self, layers.MoleculeConv,
+		check_layer_output(self, layers.MoleculeConv,
 					kwargs={
 						"units": units, 
 						"inner_dim": attribute_size-1,
@@ -92,8 +91,7 @@ class TestLayer(unittest.TestCase):
 					expected_output = np.array([expected_fp])
 					)
 
-@attr('helper')
-def layer_test(test_case, layer_cls, kwargs={}, input_shape=None, input_dtype=None,
+def check_layer_output(test_case, layer_cls, kwargs={}, input_shape=None, input_dtype=None,
 			   input_data=None, expected_output=None,
 			   expected_output_dtype=None, fixed_batch_size=False):
 	"""Test routine for a layer with a single input tensor
@@ -164,3 +162,4 @@ def layer_test(test_case, layer_cls, kwargs={}, input_shape=None, input_dtype=No
 
 	# for further checks in the caller function
 	return actual_output
+
