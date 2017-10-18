@@ -1559,8 +1559,8 @@ class KineticsFamily(Database):
         # remove degenerate reactions
         reactions = findDegeneracies(reactions, sameReactants)
 
-        # remove reactions with different templates (only for TemplateReaction)
-        if isinstance(reaction, TemplateReaction):
+        # remove reactions with different templates (only for duplicate TemplateReaction)
+        if isinstance(reaction, TemplateReaction) and reaction.duplicate:
             index = 0
             while index < len(reactions):
                 if reaction.template and \
