@@ -274,6 +274,49 @@ def findAllDelocalizationPathsLonePairRadical(atom1):
                 paths.append([atom1, atom2])
     return paths
 
+def findAllDelocalizationPathsLonePairMultipleBond(atom1):
+    """
+    Find all the delocalization paths of a lone electron pair on `atom1`,
+    or an atom that can gain a lone pair and has a multiple bond.
+    Used to generate resonance isomers. Example: S#N, N#[S], O=S([O])=O, [N]=C, N=C
+    """
+    cython.declare(paths=list)
+    cython.declare(atom2=Atom, bond12=Bond)
+
+    paths = []
+    for atom2, bond12 in atom1.edges.items():
+        if (not (atom2.radicalElectrons * atom1.radicalElectrons)  # not allowing rads on both atom1 & atom2
+                and (abs(atom1.charge) + abs(atom2.charge) <= 2)  # pre-screen by charge
+                and atom2.isNonHydrogen()):
+            if bond12.isSingle():
+                # Find paths in the direction <forming> the multiple bond
+                # atom1 must posses at least one lone pair to loose it
+                if ((atom1.isNitrogen() and atom1.lonePairs in [1, 2, 3])
+                        or (atom1.isOxygen() and atom1.lonePairs in [2, 3])  # not allowing O with no lonePairs
+                        or (atom1.isSulfur() and atom1.lonePairs in [1, 2, 3])):
+                    paths.append([atom1, atom2, bond12, 1])  # direction = 1
+                elif bond12.isDouble():
+                    # Find paths in the direction <increasing> the multiple bond
+                    # atom1 must posses at least one lone pair to loose it
+                    if ((atom1.isNitrogen() and atom1.lonePairs in [1, 2, 3])
+                            or (atom1.isOxygen() and atom1.lonePairs in [2, 3])
+                            or (atom1.isSulfur() and atom1.lonePairs in [1, 2, 3])):
+                        paths.append([atom1, atom2, bond12, 1])  # direction = 1
+                    # Find paths in the direction <decreasing> the multiple bond
+                    # atom1 gains a lone pair, hence cannot have more than two lone pairs
+                    if ((atom1.isNitrogen() and atom1.lonePairs in [0, 1, 2])
+                            or (atom1.isOxygen() and atom1.lonePairs in [1, 2])
+                            or (atom1.isSulfur() and atom1.lonePairs in [0, 1, 2])):
+                        paths.append([atom1, atom2, bond12, 2])  # direction = 2
+                elif bond12.isTriple():
+                    # Find paths in the direction <decreasing> the multiple bond
+                    # atom1 gains a lone pair, hence cannot have more than two lone pairs
+                    if ((atom1.isNitrogen() and atom1.lonePairs in [0, 1, 2])
+                            or (atom1.isOxygen() and atom1.lonePairs in [1, 2])
+                            or (atom1.isSulfur() and atom1.lonePairs in [0, 1, 2])):
+                        paths.append([atom1, atom2, bond12, 2])  # direction = 2
+    return paths
+
 def findAllDelocalizationPathsN5dd_N5ts(atom1):
     """
     Find all the resonance structures of nitrogen atoms with two double bonds (N5dd)
