@@ -234,7 +234,7 @@ def compute_atom_distance(atom_indices, mol):
         path = find_shortest_path(start, end)
         distances[(i1, i2)] = len(path) - 1  
 
-    return distances  
+    return distances
 
 
 def findAllDelocalizationPaths(atom1):
@@ -244,12 +244,7 @@ def findAllDelocalizationPaths(atom1):
     """
     cython.declare(paths=list)
     cython.declare(atom2=Atom, atom3=Atom, bond12=Bond, bond23=Bond)
-    
-    # No paths if atom1 is not a radical
-    if atom1.radicalElectrons <= 0:
-        return []
 
-    # Find all delocalization paths
     paths = []
     for atom2, bond12 in atom1.edges.items():
         # Vinyl bond must be capable of gaining an order

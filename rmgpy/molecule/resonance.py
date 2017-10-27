@@ -266,8 +266,6 @@ def generateAdjacentResonanceStructures(mol):
     cython.declare(v1=Vertex, v2=Vertex)
     
     isomers = []
-
-    # Radicals
     if mol.isRadical():
         # Iterate over radicals in structure
         for atom in mol.vertices:
@@ -295,10 +293,12 @@ def generateAdjacentResonanceStructures(mol):
                 bond12.decrementOrder()
                 bond23.incrementOrder()
                 # Append to isomer list if unique
-                isomer.updateAtomTypes(logSpecies=False)
-                isomers.append(isomer)
-
-    return isomers
+                try:
+                    isomer.updateAtomTypes(logSpecies=False)
+                    isomers.append(isomer)
+                except AtomTypeError:
+                    pass  # Don't append resonance structure if it creates an undefined atomType
+    return filterStructures(isomers)
 
 def generateLonePairRadicalResonanceStructures(mol):
     """
