@@ -258,6 +258,43 @@ def _generateResonanceStructures(molList, methodList, keepIsomorphic=False, copy
 
     return molList
 
+def filterStructures(molList):
+    """
+    We often get too many resonance structures from the combination of all rules for species containing lonePairs.
+    Here we filter them out by minimizing the number of N/S/O atoms without a full octet.
+    For example, w/o filtering we may generate 3,000+ resonance structures for [N]=NON=O,
+    vs. only 3 resonance structures after filtering.
+    """
+    cython.declare(octetDeviation=cython.int, minOctetDeviation=cython.int, valance=cython.int, i=cython.int)
+    cython.declare(octetDeviationList=list, filteredList=list)
+    cython.declare(mol=Molecule, atom=Atom)
+
+    minOctetDeviation = 0  # minOctetDeviation is initialized below to the first entry in octetDeviationList
+    octetDeviationList = []
+    for mol in molList:
+        octetDeviation = 0  # reset for each mol
+        for atom in mol.vertices:
+            valance = 2 * (int(atom.getBondOrdersForAtom()) + atom.lonePairs) + atom.radicalElectrons - atom.charge
+            if atom.isOxygen():
+                octetDeviation += abs(8 - valance)  # deviations from normal octet on O
+            elif atom.isNitrogen():
+                if atom.lonePairs:
+                    octetDeviation += abs(8 - valance)  # deviations from normal octet on N with 1 lone pair
+                else:
+                    octetDeviation += abs(10 - valance)  # deviations from valance=10 for N with no lone pairs
+            elif atom.isSulfur():
+                octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  # allowing all normal S valances (8/10/12)
+        octetDeviationList.append(octetDeviation)
+        if octetDeviation < minOctetDeviation or len(octetDeviationList) == 1:
+            minOctetDeviation = octetDeviation
+    filteredList = []
+    # removed = []  # used for debugging
+    for i in xrange(len(molList)):
+        if octetDeviationList[i] == minOctetDeviation:
+            filteredList.append(molList[i])
+        # else: removed.append(molList[i])
+    return filteredList
+
 def generateAdjacentResonanceStructures(mol):
     """
     Generate all of the resonance structures formed by one allyl radical shift.
