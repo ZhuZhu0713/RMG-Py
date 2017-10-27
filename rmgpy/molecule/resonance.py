@@ -303,44 +303,53 @@ def generateAdjacentResonanceStructures(mol):
 def generateLonePairRadicalResonanceStructures(mol):
     """
     Generate all of the resonance structures formed by lone electron pair - radical shifts.
+
+    These resonance transformations do not involve changing bond orders.
+    NO2 example: O=[:N]-[::O.] <=> O=[N.+]-[:::O-]
+    (where ':' denotes a lone pair, '.' denotes a radical, '-' not in [] denotes a single bond, '-'/'+' denote charge)
     """
     cython.declare(isomers=list, paths=list, index=cython.int, isomer=Molecule)
     cython.declare(atom=Atom, atom1=Atom, atom2=Atom)
     cython.declare(v1=Vertex, v2=Vertex)
     
     isomers = []
-
-    # Radicals
-    if mol.isRadical():
-        # Iterate over radicals in structure
+    if mol.isRadical():  # Iterate over radicals in structure
         for atom in mol.vertices:
-            paths = pathfinder.findAllDelocalizationPathsLonePairRadical(atom)
-            for atom1, atom2 in paths:
+            if atom.isOxygen() or atom.isNitrogen() or atom.isSulfur():
+                paths = pathfinder.findAllDelocalizationPathsLonePairRadical(atom)
+                for atom1, atom2 in paths:
                 # Adjust to (potentially) new resonance isomer
-                atom1.decrementRadical()
-                atom1.incrementLonePairs()
-                atom1.updateCharge()
-                atom2.incrementRadical()
-                atom2.decrementLonePairs()
-                atom2.updateCharge()
-                # Make a copy of isomer
-                isomer = mol.copy(deep=True)
-                # Also copy the connectivity values, since they are the same
-                # for all resonance forms
-                for index in range(len(mol.vertices)):
-                    v1 = mol.vertices[index]
-                    v2 = isomer.vertices[index]
-                    v2.connectivity1 = v1.connectivity1
-                    v2.connectivity2 = v1.connectivity2
-                    v2.connectivity3 = v1.connectivity3
-                    v2.sortingLabel = v1.sortingLabel
-                # Restore current isomer
-                atom1.incrementRadical()
-                atom1.decrementLonePairs()
-                atom1.updateCharge()
-                atom2.decrementRadical()
-                atom2.incrementLonePairs()
-                atom2.updateCharge()
+                    atom1.decrementRadical()
+                    atom1.incrementLonePairs()
+                    atom1.updateCharge()
+                    atom2.incrementRadical()
+                    atom2.decrementLonePairs()
+                    atom2.updateCharge()
+                    # Make a copy of isomer
+                    isomer = mol.copy(deep=True)
+                    # Also copy the connectivity values, since they are the same
+                    # for all resonance forms
+                    for index in range(len(mol.vertices)):
+                        v1 = mol.vertices[index]
+                        v2 = isomer.vertices[index]
+                        v2.connectivity1 = v1.connectivity1
+                        v2.connectivity2 = v1.connectivity2
+                        v2.connectivity3 = v1.connectivity3
+                        v2.sortingLabel = v1.sortingLabel
+                    # Restore current isomer
+                    atom1.incrementRadical()
+                    atom1.decrementLonePairs()
+                    atom1.updateCharge()
+                    atom2.decrementRadical()
+                    atom2.incrementLonePairs()
+                    atom2.updateCharge()
+                    # Append to isomer list if unique
+                    try:
+                        isomer.updateAtomTypes(logSpecies=False)
+                        isomers.append(isomer)
+                    except AtomTypeError:
+                        pass  # Don't append resonance structure if it creates an undefined atomType
+    return filterStructures(isomers)
                 # Append to isomer list if unique
                 isomer.updateAtomTypes(logSpecies=False)
                 isomers.append(isomer)
