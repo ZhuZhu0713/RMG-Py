@@ -360,74 +360,68 @@ def generateN5dd_N5tsResonanceStructures(mol):
     
     # Iterate over nitrogen atoms in structure
     for atom in mol.vertices:
-        paths = pathfinder.findAllDelocalizationPathsN5dd_N5ts(atom)
-        for atom1, atom2, atom3, bond12, bond13, direction in paths:
-            # from N5dd to N5ts
-            if direction == 1:
-                # Adjust to (potentially) new resonance isomer
-                bond12.decrementOrder()
-                bond13.incrementOrder()
-                atom2.incrementLonePairs()
-                atom3.decrementLonePairs()
-                atom1.updateCharge()
-                atom2.updateCharge()
-                atom3.updateCharge()
-                # Make a copy of isomer
-                isomer = mol.copy(deep=True)
-                # Also copy the connectivity values, since they are the same
-                # for all resonance forms
-                for index in range(len(mol.vertices)):
-                    v1 = mol.vertices[index]
-                    v2 = isomer.vertices[index]
-                    v2.connectivity1 = v1.connectivity1
-                    v2.connectivity2 = v1.connectivity2
-                    v2.connectivity3 = v1.connectivity3
-                    v2.sortingLabel = v1.sortingLabel
-                # Restore current isomer
-                bond12.incrementOrder()
-                bond13.decrementOrder()
-                atom2.decrementLonePairs()
-                atom3.incrementLonePairs()
-                atom1.updateCharge()
-                atom2.updateCharge()
-                atom3.updateCharge()
+        if atom.isNitrogen():
+            paths = pathfinder.findAllDelocalizationPathsN5dd_N5ts(atom)
+            for atom1, atom2, atom3, bond12, bond13, direction in paths:
+                if direction == 1:  # from N5dd to N5ts
+                    # Adjust to (potentially) new resonance isomer
+                    bond12.decrementOrder()
+                    bond13.incrementOrder()
+                    atom2.incrementLonePairs()
+                    atom3.decrementLonePairs()
+                    atom1.updateCharge()
+                    atom2.updateCharge()
+                    atom3.updateCharge()
+                    # Make a copy of isomer
+                    isomer = mol.copy(deep=True)
+                    # Also copy the connectivity values, since they are the same
+                    # for all resonance forms
+                    for index in range(len(mol.vertices)):
+                        v1 = mol.vertices[index]
+                        v2 = isomer.vertices[index]
+                        v2.connectivity1 = v1.connectivity1
+                        v2.connectivity2 = v1.connectivity2
+                        v2.connectivity3 = v1.connectivity3
+                        v2.sortingLabel = v1.sortingLabel
+                    # Restore current isomer
+                    bond12.incrementOrder()
+                    bond13.decrementOrder()
+                    atom2.decrementLonePairs()
+                    atom3.incrementLonePairs()
+                    atom1.updateCharge()
+                    atom2.updateCharge()
+                    atom3.updateCharge()
+                elif direction == 2:  # from N5ts to N5dd
+                    # Adjust to (potentially) new resonance isomer
+                    bond12.decrementOrder()
+                    bond13.incrementOrder()
+                    atom2.incrementLonePairs()
+                    atom3.decrementLonePairs()
+                    atom1.updateCharge()
+                    atom2.updateCharge()
+                    atom3.updateCharge()
+                    # Make a copy of isomer
+                    isomer = mol.copy(deep=True)
+                    # Also copy the connectivity values, since they are the same
+                    # for all resonance forms
+                    for index in range(len(mol.vertices)):
+                        v1 = mol.vertices[index]
+                        v2 = isomer.vertices[index]
+                        v2.connectivity1 = v1.connectivity1
+                        v2.connectivity2 = v1.connectivity2
+                        v2.connectivity3 = v1.connectivity3
+                        v2.sortingLabel = v1.sortingLabel
+                    # Restore current isomer
+                    bond12.incrementOrder()
+                    bond13.decrementOrder()
+                    atom2.decrementLonePairs()
+                    atom3.incrementLonePairs()
+                    atom1.updateCharge()
+                    atom2.updateCharge()
+                    atom3.updateCharge()
                 # Append to isomer list if unique
                 isomer.updateAtomTypes(logSpecies=False)
                 isomers.append(isomer)
-            
-            # from N5ts to N5dd
-            if direction == 2:
-                # Adjust to (potentially) new resonance isomer
-                bond12.decrementOrder()
-                bond13.incrementOrder()
-                atom2.incrementLonePairs()
-                atom3.decrementLonePairs()
-                atom1.updateCharge()
-                atom2.updateCharge()
-                atom3.updateCharge()
-                # Make a copy of isomer
-                isomer = mol.copy(deep=True)
-                # Also copy the connectivity values, since they are the same
-                # for all resonance forms
-                for index in range(len(mol.vertices)):
-                    v1 = mol.vertices[index]
-                    v2 = isomer.vertices[index]
-                    v2.connectivity1 = v1.connectivity1
-                    v2.connectivity2 = v1.connectivity2
-                    v2.connectivity3 = v1.connectivity3
-                    v2.sortingLabel = v1.sortingLabel
-                # Restore current isomer
-                bond12.incrementOrder()
-                bond13.decrementOrder()
-                atom2.decrementLonePairs()
-                atom3.incrementLonePairs()
-                atom1.updateCharge()
-                atom2.updateCharge()
-                atom3.updateCharge()
-                # Append to isomer list if unique
-                isomer.updateAtomTypes(logSpecies=False)
-                isomers.append(isomer)
-                
     return isomers
 
 def generateAromaticResonanceStructures(mol, features=None):
