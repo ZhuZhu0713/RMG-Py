@@ -489,6 +489,28 @@ class TestGetAtomType(unittest.TestCase):
                                                      3 N u2 p2 c-2 {1,S}
                                                      4 O u0 p2 c0 {2,D}''')
 
+        #self.mol71 = Molecule().fromAdjacencyList('''1 O u0 p1 c0 {2,B} {5,B}
+        #                                             2 C u0 p0 c0 {1,B} {3,B} {6,S}
+        #                                             3 C u0 p0 c0 {2,B} {4,B} {7,S}
+        #                                             4 C u0 p0 c0 {3,B} {5,B} {8,S}
+        #                                             5 C u0 p0 c0 {1,B} {4,B} {9,S}
+        #                                             6 H u0 p0 c0 {2,S}
+        #                                             7 H u0 p0 c0 {3,S}
+        #                                             8 H u0 p0 c0 {4,S}
+        #                                             9 H u0 p0 c0 {5,S}''')
+
+        #self.mol72 = Molecule().fromAdjacencyList('''1  N u0 p0 c0 {2,B} {6,B} {7,D}
+        #                                             2  C u0 p0 {1,B} {3,B} {8,S}
+        #                                             3  C u0 p0 {2,B} {4,B} {9,S}
+        #                                             4  C u0 p0 {3,B} {5,B} {10,S}
+        #                                             5  C u0 p0 {4,B} {6,B} {11,S}
+        #                                             6  N u0 p1 {1,B} {5,B}
+        #                                             7  O u0 p2 c0 {1,D}
+        #                                             8  H u0 p0 {2,S}
+        #                                             9  H u0 p0 {3,S}
+        #                                             10 H u0 p0 {4,S}
+        #                                             11 H u0 p0 {5,S}''')
+
     def atomType(self, mol, atomID):
         atom = mol.atoms[atomID]
         type = getAtomType(atom, mol.getBonds(atom))
@@ -553,6 +575,7 @@ class TestGetAtomType(unittest.TestCase):
         self.assertEqual(self.atomType(self.mol66, 1), 'N5td')
         self.assertEqual(self.atomType(self.mol67, 0), 'N5tdc')
         self.assertEqual(self.atomType(self.mol18, 0), 'N5b')
+        # self.assertEqual(self.atomType(self.mol72, 0), 'N5bd')  # aromatic nitrogen currently doesn't work well in RMG. See RMG-Py #982
         
     def testOxygenTypes(self):
         """
@@ -571,6 +594,7 @@ class TestGetAtomType(unittest.TestCase):
         self.assertEqual(self.atomType(self.mol49, 1), 'O4sc')
         self.assertEqual(self.atomType(self.mol50, 1), 'O4dc')
         self.assertEqual(self.atomType(self.mol20, 1), 'O4tc')
+        # self.assertEqual(self.atomType(self.mol71, 0), 'O4b')  # aromatic oxygen currently doesn't work well in RMG. See RMG-Py #982
     
     def testSiliconTypes(self):
         """
