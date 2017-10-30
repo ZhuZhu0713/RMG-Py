@@ -2144,7 +2144,7 @@ multiplicity 2
         self.molecule[0].fingerprint = 'nitronate'
         self.assertEqual(self.molecule[0].fingerprint, 'nitronate')
 
-    def testSaturateUnfilleValence(self):
+    def testSaturatedUnfilleValence(self):
         """
         Test the saturateUnfilledValence for an aromatic and nonaromatic case
         """
