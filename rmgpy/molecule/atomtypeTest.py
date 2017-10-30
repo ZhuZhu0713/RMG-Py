@@ -600,7 +600,7 @@ class TestGetAtomType(unittest.TestCase):
         self.assertEqual(self.atomType(self.mol28, 1), 'S4dd')
         self.assertEqual(self.atomType(self.mol38, 1), 'S4dd')
         self.assertEqual(self.atomType(self.mol26, 1), 'S4dc')
-        # self.assertEqual(self.atomType(self.mol27, 0), 'S4b')  # Not yet implemented. See RMG-Py issue #982
+        # self.assertEqual(self.atomType(self.mol27, 0), 'S4b')  # aromatic sulfur currently doesn't work well in RMG. See RMG-Py #982
         self.assertEqual(self.atomType(self.mol28, 4), 'S4t')
         self.assertEqual(self.atomType(self.mol29, 1), 'S4tdc')
         self.assertEqual(self.atomType(self.mol28, 5), 'S6s')
