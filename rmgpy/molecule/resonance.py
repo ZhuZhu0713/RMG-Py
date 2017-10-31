@@ -85,11 +85,11 @@ def populateResonanceAlgorithms(features=None):
         # cases where the radical is in an orbital that is orthogonal to the pi orbitals.
         if features['isRadical'] and not features['isAromatic'] and not features['isArylRadical']:
             methodList.append(generateAdjacentResonanceStructures)
-        if features['hasNitrogen']:
-            methodList.append(generateN5dd_N5tsResonanceStructures)
         if features['hasLonePairs']:
             methodList.append(generateLonePairRadicalResonanceStructures)
             methodList.append(generateLonePairMultipleBondResonanceStructures)
+        if features['hasNitrogen']:
+            methodList.append(generateN5dd_N5tsResonanceStructures)
 
     return methodList
 
@@ -214,7 +214,7 @@ def generateResonanceStructures(mol, clarStructures=True, keepIsomorphic=False):
     methodList = populateResonanceAlgorithms(features)
     _generateResonanceStructures(molList, methodList, keepIsomorphic)
 
-    return molList
+    return filterStructures(molList)
 
 def _generateResonanceStructures(molList, methodList, keepIsomorphic=False, copy=False):
     """
@@ -240,8 +240,20 @@ def _generateResonanceStructures(molList, methodList, keepIsomorphic=False, copy
         molecule = molList[index]
         newMolList = []
 
+        # filter structures for the generateAdjacentResonanceStructures,
+        # generateLonePairRadicalResonanceStructures, generateLonePairMultipleBondResonanceStructures
+        # methods only
         for method in methodList:
-            newMolList.extend(method(molecule))
+            if (method == generateLonePairRadicalResonanceStructures
+                    or method == generateLonePairMultipleBondResonanceStructures
+                    or method == generateAdjacentResonanceStructures):
+                newMolList.extend(method(molecule))
+                newMolList = filterStructures(newMolList)
+        for method in methodList:
+            if (method != generateLonePairRadicalResonanceStructures
+                    and method != generateLonePairMultipleBondResonanceStructures
+                    and method != generateAdjacentResonanceStructures):
+                newMolList.extend(method(molecule))
 
         for newMol in newMolList:
             # Append to isomer list if unique
@@ -269,31 +281,42 @@ def filterStructures(molList):
     cython.declare(octetDeviationList=list, filteredList=list)
     cython.declare(mol=Molecule, atom=Atom)
 
-    minOctetDeviation = 0  # minOctetDeviation is initialized below to the first entry in octetDeviationList
+    minOctetDeviation = 0  # minOctetDeviation is initialized below, so this value (0) has no effect
     octetDeviationList = []
     for mol in molList:
         octetDeviation = 0  # reset for each mol
         for atom in mol.vertices:
-            valance = 2 * (int(atom.getBondOrdersForAtom()) + atom.lonePairs) + atom.radicalElectrons - atom.charge
-            if atom.isOxygen():
-                octetDeviation += abs(8 - valance)  # deviations from normal octet on O
+            valance = 2 * (int(atom.getBondOrdersForAtom()) + atom.lonePairs) + atom.radicalElectrons
+            if atom.isCarbon():
+                octetDeviation += abs(8 - valance)  # deviations from  octet on C
+                if valance > 8:
+                    octetDeviation += 1  # an extra penalty for C with valance greater than 8
             elif atom.isNitrogen():
                 if atom.lonePairs:
-                    octetDeviation += abs(8 - valance)  # deviations from normal octet on N with 1 lone pair
+                    octetDeviation += abs(8 - valance)  # deviations from octet on N with 1 or more lone pairs
                 else:
-                    octetDeviation += abs(10 - valance)  # deviations from valance=10 for N with no lone pairs
+                    octetDeviation += min(abs(10 - valance),abs(8 - valance))  # deviations dectet for N with no lone pairs
+                if valance > 8:
+                    octetDeviation += 1  # an extra penalty for N with valance greater than 8
+            if atom.isOxygen():
+                octetDeviation += abs(8 - valance)  # deviations from  octet on O
+                if valance > 8:
+                    octetDeviation += 1  # an extra penalty for O with valance greater than 8
+                for atom1, bond in atom.edges.items():
+                    if bond.isTriple():
+                        octetDeviation += 1  # an extra penalty for O with a triple bond (as in [N-2][N+]#[O+],
+                        # [O-]S#[O+], OS(S)([O-])#[O+]; [C-]#[O+] also gets penalized here, but that's OK)
             elif atom.isSulfur():
-                octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  # allowing all normal S valances (8/10/12)
+                octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  # allowing octet/dectet/duodectet for S
         octetDeviationList.append(octetDeviation)
         if octetDeviation < minOctetDeviation or len(octetDeviationList) == 1:
             minOctetDeviation = octetDeviation
     filteredList = []
-    # removed = []  # used for debugging
     for i in xrange(len(molList)):
         if octetDeviationList[i] == minOctetDeviation:
             filteredList.append(molList[i])
-        # else: removed.append(molList[i])
     return filteredList
+    #return molList
 
 def generateAdjacentResonanceStructures(mol):
     """
@@ -338,7 +361,7 @@ def generateAdjacentResonanceStructures(mol):
                     isomers.append(isomer)
                 except AtomTypeError:
                     pass  # Don't append resonance structure if it creates an undefined atomType
-    return filterStructures(isomers)
+    return isomers
 
 def generateLonePairRadicalResonanceStructures(mol):
     """
@@ -389,7 +412,7 @@ def generateLonePairRadicalResonanceStructures(mol):
                         isomers.append(isomer)
                     except AtomTypeError:
                         pass  # Don't append resonance structure if it creates an undefined atomType
-    return filterStructures(isomers)
+    return isomers
 
 def generateLonePairMultipleBondResonanceStructures(mol):
     """
@@ -412,7 +435,7 @@ def generateLonePairMultipleBondResonanceStructures(mol):
 
     isomers = []
     for atom in mol.vertices:
-        if (atom.isOxygen() or atom.isNitrogen() or atom.isSulfur()) and atom.radicalElectrons:
+        if atom.isNOS():
             paths = pathfinder.findAllDelocalizationPathsLonePairMultipleBond(atom)
             for atom1, atom2, bond12, direction in paths:
                 if direction == 1:  # The direction <increasing> the bond order
@@ -488,7 +511,7 @@ def generateLonePairMultipleBondResonanceStructures(mol):
                     isomers.append(isomer)
                 except AtomTypeError:
                     pass  # Don't append resonance structure if it creates an undefined atomType
-    return filterStructures(isomers)
+    return isomers
 
 def generateN5dd_N5tsResonanceStructures(mol):
     """
@@ -563,8 +586,11 @@ def generateN5dd_N5tsResonanceStructures(mol):
                     atom2.updateCharge()
                     atom3.updateCharge()
                 # Append to isomer list if unique
-                isomer.updateAtomTypes(logSpecies=False)
-                isomers.append(isomer)
+                try:
+                    isomer.updateAtomTypes(logSpecies=False)
+                    isomers.append(isomer)
+                except AtomTypeError:
+                    pass  # Don't append resonance structure if it creates an undefined atomType
     return isomers
 
 def generateAromaticResonanceStructures(mol, features=None):
