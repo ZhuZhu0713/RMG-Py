@@ -50,13 +50,13 @@ Atom type       Description
 --------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ``N``           nitrogen atom with any local bond structure
 ``N0sc``        charged nitrogen atom with three lone pairs (valance 0) with up to one single bond
-``N0dc``        charged nitrogen atom with three lone pairs (valance 0) with one double bond and no single bonds
 ``N1s``         nitrogen atom with two lone pairs (valance 1) and up to one single bond
 ``N1sc``        charged nitrogen atom with two lone pairs (valance 1) up to three single bonds
-``N1dc``        charged nitrogen atom with two lone pairs (valance 1), up to two double bonds and to two single bonds
+``N1dc``        charged nitrogen atom with two lone pairs (valance 1), one double bond and to one single bond
+``N1tc``        charged nitrogen atom with two lone pairs (valance 1) and one triple bond
 ``N3s``         nitrogen atom with one lone pair (valance 3) with up to three single bonds
 ``N3d``         nitrogen atom with one lone pair (valance 3), one double bond and up to one single bond
-``N3dc``        charged nitrogen atom with one lone pair (valance 3), one to two double bonds and up to four single bonds
+``N3dc``        charged nitrogen atom with one lone pair (valance 3), one to two double bonds and up to three single bonds
 ``N3t``         nitrogen atom with one lone pair (valance 3) and one triple bond
 ``N3b``         nitrogen atom with one lone pair (valance 3) and two benzene bonds
 ``N5sc``        charged nitrogen atom with no lone pairs (valance 5) with up to four single bonds
@@ -68,8 +68,9 @@ Atom type       Description
 ``N5t``         nitrogen atom with with no lone pairs (valance 5), one triple bond and up to two single bonds
 ``N5tc``        charged nitrogen atom with with no lone pairs (valance 5), one triple bond and up to one single bond
 ``N5td``        nitrogen atom with with no lone pairs (valance 5), one triple bond and one double bond
-``N5tdc``       charged nitrogen atom with with no lone pairs (valance 5), one triple bond, one double bond and up to two single bonds
-``N5b``         nitrogen atom with with no lone pairs (valance 5) and 2 benzene bonds (one of the lone pairs also participates in the aromatic bond) and up to one single bond
+``N5tdc``       charged nitrogen atom with with no lone pairs (valance 5), one triple bond, one double bond and up to four single bonds
+``N5b``         nitrogen atom with with no lone pairs (valance 5) and two benzene bonds (one of the lone pairs also participates in the aromatic bond) and up to one single bond
+``N5bd``        nitrogen atom with with no lone pairs (valance 5), two benzene bonds, and one double bond
 *Oxygen atom types*
 --------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ``O``           oxygen atom with any local bond structure
@@ -85,6 +86,7 @@ Atom type       Description
 ``O4sc``        charged oxygen atom with one one pair (valance 4) and up to three single bonds
 ``O4dc``        charged oxygen atom with one one pair (valance 4), one double bond and up to one single bond
 ``O4tc``        charged oxygen atom with one one pair (valance 4) and one triple bond
+``O4b``         oxygen atom with one one pair (valance 4) and and two benzene bonds
 *Silicon atom types*
 --------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ``Si``          silicon atom with any local bond structure
@@ -101,10 +103,10 @@ Atom type       Description
 ``Sa``          sulfur atom with three lone pairs and no bonds
 ``S0c``         charged sulfur atom with three lone pairs (valance 0) and up to two single bonds
 ``S2s``         sulfur atom with two lone pairs (valance 2) and up to two single bonds
-``S2sc``        charged sulfur atom with two lone pairs (valance 2) and up to five single bonds
+``S2sc``        charged sulfur atom with two lone pairs (valance 2) and up to four single bonds
 ``S2d``         sulfur atom with two lone pairs (valance 2) and one double bond
-``S2dc``        charged sulfur atom with two lone pairs (valance 2), one double bond and up to three single bonds
-``S2tc``        charged sulfur atom with two lone pairs (valance 2), one triple bond and up to two single bonds
+``S2dc``        charged sulfur atom with two lone pairs (valance 2), one double bond and up to two single bonds
+``S2tc``        charged sulfur atom with two lone pairs (valance 2), one triple bond and up to one single bonds
 ``S4s``         sulfur atom with one lone pair (valance 4) and up to four single bonds
 ``S4sc``        charged sulfur atom with one lone pair (valance 4) and up to three single bonds
 ``S4d``         sulfur atom with one lone pair (valance 4), one double bond and up to two single bonds
@@ -114,13 +116,13 @@ Atom type       Description
 ``S4t``         sulfur atom with one lone pair (valance 4), one triple bond and up to one single bond
 ``S4tdc``       charged sulfur atom with one lone pair (valance 4) one to two triple bonds, up to two double bonds, and up to three single bonds
 ``S6s``         sulfur atom with no lone pairs (valance 6) and up to six single bonds
-``S6sc``        charged sulfur atom with no lone pairs (valance 6) and up to five single bonds
+``S6sc``        charged sulfur atom with no lone pairs (valance 6) and up to eight single bonds
 ``S6d``         sulfur atom with no lone pairs (valance 6), one double bond and up to four single bonds
 ``S6dd``        sulfur atom with no lone pairs (valance 6), two double bonds and up to two single bonds
 ``S6ddd``       sulfur atom with no lone pairs (valance 6) and three double bonds
-``S6dc``        charged sulfur atom with no lone pairs (valance 6), one to three double bonds and up to five single bonds
+``S6dc``        charged sulfur atom with no lone pairs (valance 6), one to three double bonds and up to six single bonds
 ``S6t``         sulfur atom with no lone pairs (valance 6), one triple bond and up to three single bonds
 ``S6td``        sulfur atom with no lone pairs (valance 6), one triple bond, one double bond and up to one single bond
 ``S6tt``        sulfur atom with no lone pairs (valance 6) and two triple bonds
-``S6tdc``       charged sulfur atom with no lone pairs (valance 6), one to two triple bonds, up to two double bonds, and up to four single bonds
+``S6tdc``       charged sulfur atom with no lone pairs (valance 6), one to two triple bonds, up to two double bonds, and up to five single bonds
 =============== ==============================================================================================================================================================
