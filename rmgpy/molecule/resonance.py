@@ -290,22 +290,26 @@ def filterStructures(molList):
             if atom.isCarbon():
                 octetDeviation += abs(8 - valance)  # deviations from  octet on C
                 if valance > 8:
-                    octetDeviation += 1  # an extra penalty for C with valance greater than 8
+                    octetDeviation += 1  # extra penalty for C with valance greater than 8 (as in [CH3-.][O+]=O)
             elif atom.isNitrogen():
                 if atom.lonePairs:
                     octetDeviation += abs(8 - valance)  # deviations from octet on N with 1 or more lone pairs
+                    if atom.lonePairs == 3:
+                        octetDeviation += 1  # extra penalty for N p3 (as in [NH2+][:::N-2], [NH+]#[N+][:::N-2])
                 else:
-                    octetDeviation += min(abs(10 - valance),abs(8 - valance))  # deviations dectet for N with no lone pairs
+                    octetDeviation += min(abs(10 - valance),abs(8 - valance))  # deviations from dectet for N p0
                 if valance > 8:
-                    octetDeviation += 1  # an extra penalty for N with valance greater than 8
+                    octetDeviation += 1  # extra penalty for N with valance greater than 8 (as in O=[N.]=O,
+                    # [NH2.]=[:NH.], N#N=O, N#[N.]O, CCN=N#N)
             if atom.isOxygen():
                 octetDeviation += abs(8 - valance)  # deviations from  octet on O
                 if valance > 8:
-                    octetDeviation += 1  # an extra penalty for O with valance greater than 8
+                    octetDeviation += 1  # extra penalty for O with valance greater than 8 (as in O=[N+]=[O-.],
+                    # CC=[N+]=[::O-.])
                 for atom1, bond in atom.edges.items():
                     if bond.isTriple():
-                        octetDeviation += 1  # an extra penalty for O with a triple bond (as in [N-2][N+]#[O+],
-                        # [O-]S#[O+], OS(S)([O-])#[O+]; [C-]#[O+] also gets penalized here, but that's OK)
+                        octetDeviation += 1  # extra penalty for O with a triple bond (as in [N-2][N+]#[O+],
+                        # [O-]S#[O+], OS(S)([O-])#[O+];   [C-]#[O+] also gets penalized here, but that's OK)
             elif atom.isSulfur():
                 octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  # allowing octet/dectet/duodectet for S
         octetDeviationList.append(octetDeviation)
