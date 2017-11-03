@@ -101,7 +101,7 @@ Atom type       Description
 --------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ``S``           sulfur atom with any local bond structure
 ``Sa``          sulfur atom with three lone pairs and no bonds
-``S0c``         charged sulfur atom with three lone pairs (valance 0) and up to two single bonds
+``S0sc``        charged sulfur atom with three lone pairs (valance 0) and up to one single bonds
 ``S2s``         sulfur atom with two lone pairs (valance 2) and up to two single bonds
 ``S2sc``        charged sulfur atom with two lone pairs (valance 2) and up to four single bonds
 ``S2d``         sulfur atom with two lone pairs (valance 2) and one double bond
