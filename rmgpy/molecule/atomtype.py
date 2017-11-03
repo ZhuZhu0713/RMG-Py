@@ -242,7 +242,7 @@ atomTypes['R']    = AtomType(label='R', generic=[], specific=[
     'O','Oa','O0sc','O0dc','O2s','O2sp','O2sn','O2d','O2dc','O2tc','O4sc','O4dc','O4tc','O4b',
     'Ne',
     'Si','Sis','Sid','Sidd','Sit','SiO','Sib','Sibf',
-    'S','Sa','S0c','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc',
+    'S','Sa','S0sc','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc',
     'Cl','Ar']
 )
 atomTypes['R!H']  = AtomType(label='R!H', generic=['R'], specific=[
@@ -253,7 +253,7 @@ atomTypes['R!H']  = AtomType(label='R!H', generic=['R'], specific=[
     'O','Oa','O0sc','O0dc','O2s','O2sp','O2sn','O2d','O2dc','O2tc','O4sc','O4dc','O4tc','O4b',
     'Ne',
     'Si','Sis','Sid','Sidd','Sit','SiO','Sib','Sibf',
-    'S','Sa','S0c','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc',
+    'S','Sa','S0sc','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc',
     'Cl','Ar'])
 
 atomTypes['Val4'] = AtomType(label='Val4', generic=['R','R!H'], specific=[
@@ -265,7 +265,7 @@ atomTypes['Val5'] = AtomType(label='Val5', generic=['R','R!H'], specific=[
 
 atomTypes['Val6'] = AtomType(label='Val6', generic=['R','R!H'], specific=[
     'O','Oa','O0sc','O0dc','O2s','O2sp','O2sn','O2d','O2dc','O2tc','O4sc','O4dc','O4tc','O4b',
-    'S','Sa','S0c','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc'])
+    'S','Sa','S0sc','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc'])
 
 atomTypes['Val7'] = AtomType(label='Val7', generic=['R','R!H'], specific=[
     'Cl'])
@@ -458,14 +458,14 @@ atomTypes['Sib' ] = AtomType('Sib',  generic=['R','R!H','Si','Val4'], specific=[
 atomTypes['Sibf'] = AtomType('Sibf', generic=['R','R!H','Si','Val4'], specific=[],
                              single=[], allDouble=[0], rDouble=[], oDouble=[], sDouble=[], triple=[0], benzene=[3], lonePairs=[], charge=[])
 
-atomTypes['S'   ] = AtomType('S',    generic=['R','R!H','Val6'],      specific=['Sa','S0c','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc'],
+atomTypes['S'   ] = AtomType('S',    generic=['R','R!H','Val6'],      specific=['Sa','S0sc','S2s','S2sc','S2d','S2dc','S2tc','S4s','S4sc','S4d','S4dd','S4dc','S4b','S4t','S4tdc','S6s','S6sc','S6d','S6dd','S6ddd','S6dc','S6t','S6td','S6tt','S6tdc'],
                              single=[], allDouble=[], rDouble=[], oDouble=[], sDouble=[], triple=[], benzene=[], lonePairs=[], charge=[])
 atomTypes['Sa'  ] = AtomType('Sa',   generic=['R','R!H','S','Val6'],  specific=[],
                             single=[0], allDouble=[0], rDouble=[0], oDouble=[0], sDouble=[0], triple=[0], benzene=[0], lonePairs=[3], charge=[0])
 # examples for Sa: atomic sulfur (closed shell)
-atomTypes['S0c'] = AtomType('S0c', generic=['R','R!H','S','Val6'],  specific=[],
-                             single=[0,1,2], allDouble=[0,1], rDouble=[], oDouble=[], sDouble=[], triple=[0,1], benzene=[0], lonePairs=[3], charge=[-2,-1])
-# examples for S0c: [S-][S+], S3 {[S-][S+]=S}
+atomTypes['S0sc'] = AtomType('S0sc', generic=['R','R!H','S','Val6'],  specific=[],
+                             single=[0,1], allDouble=[0,1], rDouble=[], oDouble=[], sDouble=[], triple=[0,1], benzene=[0], lonePairs=[3], charge=[-1])
+# examples for S0sc: [S-][S+]=S
 atomTypes['S2s' ] = AtomType('S2s',  generic=['R','R!H','S','Val6'],  specific=[],
                              single=[0,1,2], allDouble=[0], rDouble=[0], oDouble=[0], sDouble=[0], triple=[0], benzene=[0], lonePairs=[2], charge=[0])
 # examples for S2s: [S], [SH], S {H2S}, [S][S], SS {H2S2}, SSC, CSSC, SO {HSOH}...
@@ -534,7 +534,7 @@ atomTypes['S6tt'] = AtomType('S6tt', generic=['R','R!H','S','Val6'],  specific=[
 # examples for S6tt: N#S#N
 atomTypes['S6tdc'] = AtomType('S6tdc',generic=['R','R!H','S','Val6'],  specific=[],
                              single=[0,1,2,3,4,5], allDouble=[0,1,2], rDouble=[], oDouble=[], sDouble=[], triple=[1,2], benzene=[0], lonePairs=[0], charge=[-2,-1,+1,+2])
-# *Composite atomType; examples for S6tdc: [N-2][N+]#[S+]=O, [SH2+]#[C-]
+# *Composite atomType; examples for S6tdc: [SH2+]#[C-], [N-]=[S+]#N
 
 
 atomTypes['Cl'  ] = AtomType('Cl',   generic=['R','R!H','Val7'],      specific=[])
@@ -624,13 +624,13 @@ atomTypes['Sib' ].setActions(incrementBond=[],               decrementBond=[],  
 atomTypes['Sibf'].setActions(incrementBond=[],               decrementBond=[],               formBond=[],            breakBond=[],            incrementRadical=[],       decrementRadical=[],       incrementLonePair=[],      decrementLonePair=[])
 
 atomTypes['S'   ].setActions(incrementBond=['S'],            decrementBond=['S'],            formBond=['S'],         breakBond=['S'],         incrementRadical=['S'],    decrementRadical=['S'],    incrementLonePair=['S'],   decrementLonePair=['S'])
-atomTypes['S0c'].setActions(incrementBond=['S0c'],           decrementBond=['S0c'],          formBond=['S0c'],       breakBond=['Sa','S0c'],  incrementRadical=['S0c'],  decrementRadical=['S0c'],  incrementLonePair=[],      decrementLonePair=['S2s','S2sc','S2dc','S2tc'])
-atomTypes['Sa'  ].setActions(incrementBond=[],               decrementBond=[],               formBond=['S0c'],       breakBond=[],            incrementRadical=[],       decrementRadical=[],       incrementLonePair=[],      decrementLonePair=['S2s'])
-atomTypes['S2s' ].setActions(incrementBond=['S2d','S2dc'],   decrementBond=[],               formBond=['S2s','S2sc'],breakBond=['S2s'],       incrementRadical=['S2s'],  decrementRadical=['S2s'],  incrementLonePair=['Sa','S0c'],decrementLonePair=['S4s','S4sc'])
-atomTypes['S2sc'].setActions(incrementBond=['S2dc'],         decrementBond=[],               formBond=['S2sc'],      breakBond=['S2sc','S2s'],incrementRadical=['S2sc'], decrementRadical=['S2sc'], incrementLonePair=['S0c'], decrementLonePair=['S4s','S4sc'])
+atomTypes['S0sc'].setActions(incrementBond=['S0sc'],         decrementBond=['S0sc'],         formBond=['S0sc'],      breakBond=['Sa','S0sc'], incrementRadical=['S0sc'], decrementRadical=['S0sc'], incrementLonePair=[],      decrementLonePair=['S2s','S2sc','S2dc','S2tc'])
+atomTypes['Sa'  ].setActions(incrementBond=[],               decrementBond=[],               formBond=['S0sc'],      breakBond=[],            incrementRadical=[],       decrementRadical=[],       incrementLonePair=[],      decrementLonePair=['S2s'])
+atomTypes['S2s' ].setActions(incrementBond=['S2d','S2dc'],   decrementBond=[],               formBond=['S2s','S2sc'],breakBond=['S2s'],       incrementRadical=['S2s'],  decrementRadical=['S2s'],  incrementLonePair=['Sa','S0sc'],decrementLonePair=['S4s','S4sc'])
+atomTypes['S2sc'].setActions(incrementBond=['S2dc'],         decrementBond=[],               formBond=['S2sc'],      breakBond=['S2sc','S2s'],incrementRadical=['S2sc'], decrementRadical=['S2sc'], incrementLonePair=['S0sc'],decrementLonePair=['S4s','S4sc'])
 atomTypes['S2d' ].setActions(incrementBond=['S2tc'],         decrementBond=['S2s'],          formBond=['S2d'],       breakBond=['S2d'],       incrementRadical=['S2d'],  decrementRadical=['S2d'],  incrementLonePair=[],      decrementLonePair=['S4dc','S4d'])
-atomTypes['S2dc'].setActions(incrementBond=['S2tc','S2dc'],  decrementBond=['S2sc','S2s','S2dc'],formBond=['S2dc'],  breakBond=['S2dc'],      incrementRadical=['S2dc'], decrementRadical=['S2dc'], incrementLonePair=['S0c'], decrementLonePair=['S4d','S4dc'])
-atomTypes['S2tc'].setActions(incrementBond=[],               decrementBond=['S2d','S2dc'],   formBond=['S2tc'],      breakBond=['S2tc'],      incrementRadical=['S2tc'], decrementRadical=['S2tc'], incrementLonePair=['S0c'], decrementLonePair=['S4t'])
+atomTypes['S2dc'].setActions(incrementBond=['S2tc','S2dc'],  decrementBond=['S2sc','S2s','S2dc'],formBond=['S2dc'],  breakBond=['S2dc'],      incrementRadical=['S2dc'], decrementRadical=['S2dc'], incrementLonePair=['S0sc'],decrementLonePair=['S4d','S4dc'])
+atomTypes['S2tc'].setActions(incrementBond=[],               decrementBond=['S2d','S2dc'],   formBond=['S2tc'],      breakBond=['S2tc'],      incrementRadical=['S2tc'], decrementRadical=['S2tc'], incrementLonePair=['S0sc'],decrementLonePair=['S4t'])
 atomTypes['S4s' ].setActions(incrementBond=['S4d','S4dc'],   decrementBond=[],               formBond=['S4s'],       breakBond=['S4s'],       incrementRadical=['S4s'],  decrementRadical=['S4s'],  incrementLonePair=['S2s','S2sc'],decrementLonePair=['S6s'])
 atomTypes['S4sc'].setActions(incrementBond=['S4d','S4dc'],   decrementBond=[],               formBond=['S4s','S4sc'],breakBond=['S4sc'],      incrementRadical=['S4sc'], decrementRadical=['S4sc'], incrementLonePair=['S2s','S2sc'],decrementLonePair=['S6s'])
 atomTypes['S4d' ].setActions(incrementBond=['S4dd','S4dc','S4t','S4tdc'],decrementBond=['S4s','S4sc'],formBond=['S4dc','S4d'],breakBond=['S4d','S4dc'],incrementRadical=['S4d'],decrementRadical=['S4d'],incrementLonePair=['S2d','S2dc'],decrementLonePair=['S6d','S6dc'])
