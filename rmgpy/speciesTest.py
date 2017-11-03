@@ -176,6 +176,31 @@ class TestSpecies(unittest.TestCase):
         for i, j in zip(spec.molecule, spec2.molecule):
             self.assertTrue(j.isIsomorphic(i), msg='i is not isomorphic with j, where i is {} and j is {}'.format(i.toSMILES(), j.toSMILES()))
 
+    def testIsIsomorphicToFilteredResonanceStructure(self):
+        """
+        Test that a Species containing a non-representative resonance structure is isomorphic with the correct Species
+
+        When generating resonance isomers for N/O/S atoms, a ridiculous amount of resonance structures per species can
+        potentially be generated, hence most are filtered out, and only the "correct" or "representative" structures
+        are kept. This test make sure that if a non-representative structure (i.e., a structure that was filtered out)
+        is generated, RMG still finds that it is isomorphic with the correct structure.
+        """
+        spcA0 = Species().fromSMILES('CO[O]')  # correct structure
+        spcA1 = Species().fromSMILES('[CH3-]=[O+][O]')
+        spcB0 = Species().fromSMILES('[O]N=O')  # one of the correct structures
+        spcB1 = Species().fromAdjacencyList("""multiplicity 2
+                                               1 O u0 p2 c0 {2,D}
+                                               2 N u1 p0 c0 {1,D} {3,D}
+                                               3 O u0 p2 c0 {2,D}""")
+        spcC0 = Species().fromSMILES('OS(=O)[O]')
+        spcC1 = Species().fromSMILES('O[S-](#[O+])[O]')
+        spcC2 = Species().fromSMILES('O=[S+2]([O-])[O-]')
+
+        self.assertTrue(spcA1.isIsomorphic(spcA0))
+        self.assertTrue(spcB1.isIsomorphic(spcB0))
+        self.assertTrue(spcC1.isIsomorphic(spcC0))
+        self.assertTrue(spcC2.isIsomorphic(spcC0))
+
     def testGetResonanceHybrid(self):
         """
         Tests that getResonanceHybrid returns an isomorphic structure
