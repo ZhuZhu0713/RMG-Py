@@ -288,30 +288,37 @@ def filterStructures(molList):
         for atom in mol.vertices:
             valance = 2 * (int(atom.getBondOrdersForAtom()) + atom.lonePairs) + atom.radicalElectrons
             if atom.isCarbon():
-                octetDeviation += abs(8 - valance)  # deviations from  octet on C
+                octetDeviation += abs(8 - valance)  # octet on C
                 if valance > 8:
-                    octetDeviation += 1  # extra penalty for C with valance greater than 8 (as in [CH3-.][O+]=O)
+                    octetDeviation += 1  # penalty for C with valance greater than 8 (as in [CH3-.][O+]=O)
             elif atom.isNitrogen():
                 if atom.lonePairs:
-                    octetDeviation += abs(8 - valance)  # deviations from octet on N with 1 or more lone pairs
+                    octetDeviation += abs(8 - valance)  # octet on N p1/2/3
                     if atom.lonePairs == 3:
-                        octetDeviation += 1  # extra penalty for N p3 (as in [NH2+][:::N-2], [NH+]#[N+][:::N-2])
+                        octetDeviation += 1  # penalty for N p3 (as in [NH2+][:::N-2], [NH+]#[N+][:::N-2])
                 else:
-                    octetDeviation += min(abs(10 - valance),abs(8 - valance))  # deviations from dectet for N p0
+                    octetDeviation += min(abs(10 - valance),abs(8 - valance))  # octed/dectet for N p0
+                    # N p0 could also be close to octet and not dectet, such as in O=[N+][O-]
                 if valance > 8:
-                    octetDeviation += 1  # extra penalty for N with valance greater than 8 (as in O=[N.]=O,
+                    octetDeviation += 1  # penalty for N with valance greater than 8 (as in O=[N.]=O,
                     # [NH2.]=[:NH.], N#N=O, N#[N.]O, CCN=N#N)
             if atom.isOxygen():
-                octetDeviation += abs(8 - valance)  # deviations from  octet on O
+                octetDeviation += abs(8 - valance)  # octet on O
                 if valance > 8:
-                    octetDeviation += 1  # extra penalty for O with valance greater than 8 (as in O=[N+]=[O-.],
+                    octetDeviation += 1  # penalty for O with valance greater than 8 (as in O=[N+]=[O-.],
                     # CC=[N+]=[::O-.])
-                for atom1, bond in atom.edges.items():
-                    if bond.isTriple():
-                        octetDeviation += 1  # extra penalty for O with a triple bond (as in [N-2][N+]#[O+],
-                        # [O-]S#[O+], OS(S)([O-])#[O+];   [C-]#[O+] also gets penalized here, but that's OK)
+                if atom.atomType.label in ['O4dc','O4tc']:
+                    octetDeviation += 1  # penalty for charged O with a double/triple bond (as in [N-2][N+]#[O+],
+                    # [O-]S#[O+], OS(S)([O-])#[O+], [OH+]=S(O)(=O)[O-];
+                    # [C-]#[O+] and [O-][O+]=O which are correct structures also get penalized here, but that's OK
+                    # since they are still selected as representative structures according to the rules here.)
             elif atom.isSulfur():
-                octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  # allowing octet/dectet/duodectet for S
+                #octetDeviation += min(abs(12 - valance),abs(10 - valance),abs(8 - valance))  #  octet/dectet/duodectet
+                if atom.lonePairs:
+                    octetDeviation += min(abs(10 - valance), abs(8 - valance))  #  octet/dectet on S p1/2
+                else:
+                    octetDeviation += min(abs(12 - valance), abs(10 - valance))  #  dectet/duodectet on S p0
+                    #octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  #  octet/dectet/duodectet, depending on lp
         octetDeviationList.append(octetDeviation)
         if octetDeviation < minOctetDeviation or len(octetDeviationList) == 1:
             minOctetDeviation = octetDeviation
