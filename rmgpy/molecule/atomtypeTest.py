@@ -253,10 +253,10 @@ class TestGetAtomType(unittest.TestCase):
                                                      5 H u0 p0 c0 {1,S}
                                                      6 H u0 p0 c0 {1,S}''')
 
-        self.mol31 = Molecule().fromAdjacencyList('''1 O u0 p3 c-1 {2,S}
-                                                     2 S u0 p0 c+2 {1,S} {3,S} {4,D}
-                                                     3 O u0 p3 c-1 {2,S}
-                                                     4 O u0 p2 c0  {2,D}''')
+        self.mol31 = Molecule().fromAdjacencyList('''1 S u0 p0 c+1 {2,S} {3,D} {4,D}
+                                                     2 O u0 p3 c-1 {1,S}
+                                                     3 O u0 p2 c0 {1,D}
+                                                     4 O u0 p2 c0 {1,D}''')
 
         self.mol32 = Molecule().fromAdjacencyList('''1 O u0 p2 c0 {2,D}
                                                      2 S u0 p0 c0 {1,D} {3,D} {4,S} {5,S}
@@ -483,11 +483,9 @@ class TestGetAtomType(unittest.TestCase):
                                                      2 S u0 p2 c-1 {1,T}
                                                      3 H u0 p0 c0 {1,S}''')
 
-        self.mol70 = Molecule().fromAdjacencyList('''multiplicity 3
-                                                     1 N u0 p0 c+1 {2,T} {3,S}
-                                                     2 S u0 p0 c+1 {1,T} {4,D}
-                                                     3 N u2 p2 c-2 {1,S}
-                                                     4 O u0 p2 c0 {2,D}''')
+        self.mol70 = Molecule().fromAdjacencyList('''1 S u0 p0 c+1 {2,D} {3,T}
+                                                     2 N u0 p2 c-1 {1,D}
+                                                     3 N u0 p1 c0 {1,T}''')
 
         #self.mol71 = Molecule().fromAdjacencyList('''1 O u0 p1 c0 {2,B} {5,B}
         #                                             2 C u0 p0 c0 {1,B} {3,B} {6,S}
@@ -611,7 +609,7 @@ class TestGetAtomType(unittest.TestCase):
         Test that getAtomType() returns appropriate sulfur atom types.
         """
         self.assertEqual(self.atomType(self.mol22, 0), 'Sa')
-        self.assertEqual(self.atomType(self.mol21, 0), 'S0c')
+        self.assertEqual(self.atomType(self.mol21, 0), 'S0sc')
         self.assertEqual(self.atomType(self.mol23, 0), 'S2s')
         self.assertEqual(self.atomType(self.mol21, 1), 'S2sc')
         self.assertEqual(self.atomType(self.mol42, 2), 'S2sc')
@@ -633,12 +631,12 @@ class TestGetAtomType(unittest.TestCase):
         self.assertEqual(self.atomType(self.mol32, 1), 'S6dd')
         self.assertEqual(self.atomType(self.mol34, 1), 'S6ddd')
         self.assertEqual(self.atomType(self.mol43, 1), 'S6dc')
-        self.assertEqual(self.atomType(self.mol31, 1), 'S6dc')
+        self.assertEqual(self.atomType(self.mol31, 0), 'S6dc')
         self.assertEqual(self.atomType(self.mol33, 1), 'S6dc')
         self.assertEqual(self.atomType(self.mol35, 0), 'S6t')
         self.assertEqual(self.atomType(self.mol36, 0), 'S6td')
         self.assertEqual(self.atomType(self.mol37, 1), 'S6tt')
-        self.assertEqual(self.atomType(self.mol70, 1), 'S6tdc')
+        self.assertEqual(self.atomType(self.mol70, 0), 'S6tdc')
     
     def testOtherTypes(self):
         """
