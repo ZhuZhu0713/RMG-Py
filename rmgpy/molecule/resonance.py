@@ -280,35 +280,48 @@ def filterStructures(molList):
             if atom.isCarbon():
                 octetDeviation += abs(8 - valance)  # octet on C
                 if valance > 8:
-                    octetDeviation += 1  # penalty for C with valance greater than 8 (as in [CH3-.][O+]=O)
+                    octetDeviation += 1  # additional penalty for C with valance greater than 8 (as in [CH3-.][O+]=O)
             elif atom.isNitrogen():
                 if atom.lonePairs:
                     octetDeviation += abs(8 - valance)  # octet on N p1/2/3
                     if atom.lonePairs == 3:
-                        octetDeviation += 1  # penalty for N p3 (as in [NH2+][:::N-2], [NH+]#[N+][:::N-2])
+                        octetDeviation += 1  # additional penalty for N p3 (as in [NH2+][:::N-2], [NH+]#[N+][:::N-2])
                 else:
                     octetDeviation += min(abs(10 - valance),abs(8 - valance))  # octed/dectet for N p0
                     # N p0 could also be close to octet and not dectet, such as in O=[N+][O-]
                 if valance > 8:
-                    octetDeviation += 1  # penalty for N with valance greater than 8 (as in O=[N.]=O,
+                    octetDeviation += 1  # additional penalty for N p0 with valance greater than 8 (as in O=[N.]=O,
                     # [NH2.]=[:NH.], N#N=O, N#[N.]O, CCN=N#N)
             if atom.isOxygen():
                 octetDeviation += abs(8 - valance)  # octet on O
                 if valance > 8:
-                    octetDeviation += 1  # penalty for O with valance greater than 8 (as in O=[N+]=[O-.],
+                    octetDeviation += 1  # additional penalty for O with valance greater than 8 (as in O=[N+]=[O-.],
                     # CC=[N+]=[::O-.])
                 if atom.atomType.label in ['O4dc','O4tc']:
-                    octetDeviation += 1  # penalty for charged O with a double/triple bond (as in [N-2][N+]#[O+],
-                    # [O-]S#[O+], OS(S)([O-])#[O+], [OH+]=S(O)(=O)[O-];
+                    octetDeviation += 1  # additional penalty for charged O with a double/triple bond
+                    # (as in [N-2][N+]#[O+], [O-]S#[O+], OS(S)([O-])#[O+], [OH+]=S(O)(=O)[O-];
                     # [C-]#[O+] and [O-][O+]=O which are correct structures also get penalized here, but that's OK
                     # since they are still selected as representative structures according to the rules here.)
             elif atom.isSulfur():
-                #octetDeviation += min(abs(12 - valance),abs(10 - valance),abs(8 - valance))  #  octet/dectet/duodectet
-                if atom.lonePairs:
-                    octetDeviation += min(abs(10 - valance), abs(8 - valance))  #  octet/dectet on S p1/2
-                else:
-                    octetDeviation += min(abs(12 - valance), abs(10 - valance))  #  dectet/duodectet on S p0
-                    #octetDeviation += abs((12 - 2 * atom.lonePairs) - valance)  #  octet/dectet/duodectet, depending on lp
+                if atom.lonePairs == 0 and not (valance == 10 and atom.charge == +1):
+                    octetDeviation += abs(12 - valance)  # duodectet on S p0, eg O=S(=O)(O)O val 12,
+                    # O[S](=O)=O val 11; allowing also dected c +1, eg O[S+](=O)(O)[O-] as having no deviation
+                    if valance == 9:
+                        octetDeviation += 1  # eg O[S+]([O-])=O val 9 is undesired
+                elif atom.lonePairs == 1:
+                    octetDeviation += min(abs(8 - valance), abs(10 - valance))  # octet/dectet on S p1,
+                    # eg [O-][S+]=O val 8, O[S]=O val 9, OS([O])=O val 10
+                    if valance in [7,11]:
+                        octetDeviation += 1  # eg O[S+][O-] val 7, N=[N+]=[S-]=O val 11 are undesired
+                elif atom.lonePairs == 2:
+                    octetDeviation += min(abs(8 - valance), abs(10 - valance))  # octet/dectet on S p2,
+                    # eg [S][S] val 7, OS[O] val 8, [NH+]#[N+][S-][O-] val 9, O[S-](O)[N+]#N val 10
+                    if valance == 11:
+                        octetDeviation += 1  # eg [NH+]#[N+][S-2]=O val 11 is undesired
+                elif atom.lonePairs == 3:
+                    octetDeviation += abs(8 - valance)  # octet on S p3, eg [S-][O+]=O
+                    if valance == 10:
+                        octetDeviation += 1  # eg [NH+]#[N+][S-2][O] val 10 is undesired
         octetDeviationList.append(octetDeviation)
         if octetDeviation < minOctetDeviation or len(octetDeviationList) == 1:
             minOctetDeviation = octetDeviation
