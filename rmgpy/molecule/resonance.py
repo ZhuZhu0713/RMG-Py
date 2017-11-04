@@ -40,7 +40,6 @@ Currently supported resonance types:
     - ``generateAdjacentResonanceStructures``: single radical shift with double or triple bond
     - ``generateLonePairRadicalResonanceStructures``: single radical shift with lone pair
     - ``generateLonePairMultipleBondResonanceStructures``: multiple bond shift with lone pair
-    - ``generateN5dd_N5tsResonanceStructures``: shift between nitrogen with two double bonds and single + triple bond
 - Aromatic species only:
     - ``generateAromaticResonanceStructures``: fully delocalized structure, where all aromatic rings have benzene bonds
     - ``generateKekuleStructure``: generate a single Kekule structure for an aromatic compound (single/double bond form)
@@ -73,7 +72,6 @@ def populateResonanceAlgorithms(features=None):
             generateAdjacentResonanceStructures,
             generateLonePairRadicalResonanceStructures,
             generateLonePairMultipleBondResonanceStructures,
-            generateN5dd_N5tsResonanceStructures,
             generateAromaticResonanceStructures,
             generateKekuleStructure,
             generateOppositeKekuleStructure,
@@ -88,8 +86,6 @@ def populateResonanceAlgorithms(features=None):
         if features['hasLonePairs']:
             methodList.append(generateLonePairRadicalResonanceStructures)
             methodList.append(generateLonePairMultipleBondResonanceStructures)
-        if features['hasNitrogen']:
-            methodList.append(generateN5dd_N5tsResonanceStructures)
 
     return methodList
 
@@ -106,8 +102,6 @@ def analyzeMolecule(mol):
                 'isAromatic': False,
                 'isPolycyclicAromatic': False,
                 'isArylRadical': False,
-                'hasNitrogen': False,
-                'hasOxygen': False,
                 'hasLonePairs': False,
                 }
 
@@ -120,10 +114,6 @@ def analyzeMolecule(mol):
         if features['isRadical'] and features['isAromatic']:
             features['isArylRadical'] = mol.isArylRadical(aromaticRings)
     for atom in mol.vertices:
-        if atom.isNitrogen():
-            features['hasNitrogen'] = True
-        if atom.isOxygen():
-            features['hasOxygen'] = True
         if atom.lonePairs > 0:
             features['hasLonePairs'] = True
 
@@ -516,86 +506,6 @@ def generateLonePairMultipleBondResonanceStructures(mol):
                     bond12.incrementOrder()
                     atom1.updateCharge()
                     atom2.updateCharge()
-                # Append to isomer list if unique
-                try:
-                    isomer.updateAtomTypes(logSpecies=False)
-                    isomers.append(isomer)
-                except AtomTypeError:
-                    pass  # Don't append resonance structure if it creates an undefined atomType
-    return isomers
-
-def generateN5dd_N5tsResonanceStructures(mol):
-    """
-    Generate all of the resonance structures formed by shifts between N5dd and N5ts.
-    """
-    cython.declare(isomers=list, paths=list, index=cython.int, isomer=Molecule)
-    cython.declare(atom=Atom, atom1=Atom, atom2=Atom, atom3=Atom)
-    cython.declare(bond12=Bond, bond13=Bond)
-    cython.declare(v1=Vertex, v2=Vertex)
-    
-    isomers = []
-    
-    # Iterate over nitrogen atoms in structure
-    for atom in mol.vertices:
-        if atom.isNitrogen():
-            paths = pathfinder.findAllDelocalizationPathsN5dd_N5ts(atom)
-            for atom1, atom2, atom3, bond12, bond13, direction in paths:
-                if direction == 1:  # from N5dd to N5ts
-                    # Adjust to (potentially) new resonance isomer
-                    bond12.decrementOrder()
-                    bond13.incrementOrder()
-                    atom2.incrementLonePairs()
-                    atom3.decrementLonePairs()
-                    atom1.updateCharge()
-                    atom2.updateCharge()
-                    atom3.updateCharge()
-                    # Make a copy of isomer
-                    isomer = mol.copy(deep=True)
-                    # Also copy the connectivity values, since they are the same
-                    # for all resonance forms
-                    for index in range(len(mol.vertices)):
-                        v1 = mol.vertices[index]
-                        v2 = isomer.vertices[index]
-                        v2.connectivity1 = v1.connectivity1
-                        v2.connectivity2 = v1.connectivity2
-                        v2.connectivity3 = v1.connectivity3
-                        v2.sortingLabel = v1.sortingLabel
-                    # Restore current isomer
-                    bond12.incrementOrder()
-                    bond13.decrementOrder()
-                    atom2.decrementLonePairs()
-                    atom3.incrementLonePairs()
-                    atom1.updateCharge()
-                    atom2.updateCharge()
-                    atom3.updateCharge()
-                elif direction == 2:  # from N5ts to N5dd
-                    # Adjust to (potentially) new resonance isomer
-                    bond12.decrementOrder()
-                    bond13.incrementOrder()
-                    atom2.incrementLonePairs()
-                    atom3.decrementLonePairs()
-                    atom1.updateCharge()
-                    atom2.updateCharge()
-                    atom3.updateCharge()
-                    # Make a copy of isomer
-                    isomer = mol.copy(deep=True)
-                    # Also copy the connectivity values, since they are the same
-                    # for all resonance forms
-                    for index in range(len(mol.vertices)):
-                        v1 = mol.vertices[index]
-                        v2 = isomer.vertices[index]
-                        v2.connectivity1 = v1.connectivity1
-                        v2.connectivity2 = v1.connectivity2
-                        v2.connectivity3 = v1.connectivity3
-                        v2.sortingLabel = v1.sortingLabel
-                    # Restore current isomer
-                    bond12.incrementOrder()
-                    bond13.decrementOrder()
-                    atom2.decrementLonePairs()
-                    atom3.incrementLonePairs()
-                    atom1.updateCharge()
-                    atom2.updateCharge()
-                    atom3.updateCharge()
                 # Append to isomer list if unique
                 try:
                     isomer.updateAtomTypes(logSpecies=False)

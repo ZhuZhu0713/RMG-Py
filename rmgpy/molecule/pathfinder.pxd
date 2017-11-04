@@ -22,5 +22,3 @@ cpdef list findAllDelocalizationPaths(Atom atom1)
 cpdef list findAllDelocalizationPathsLonePairRadical(Atom atom1)
 
 cpdef list findAllDelocalizationPathsLonePairMultipleBond(Atom atom1)
-
-cpdef list findAllDelocalizationPathsN5dd_N5ts(Atom atom1)
